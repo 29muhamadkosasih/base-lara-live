@@ -1,23 +1,3 @@
-@php
-    $setting = \App\Models\SettingApp::first();
-    $logoUrl = $setting?->logo
-        ? asset('storage/uploads/logos/' . $setting->logo)
-        : asset('assets/img/favicon/favicon.ico');
-    $userManagementPermissions = ['permissions.index', 'role.index', 'users.index'];
-    $isHomeRoute = request()->routeIs('home');
-    $isProductRoute = request()->routeIs('products.*');
-    $isUserRoute = request()->routeIs('users.*');
-    $isRoleRoute = request()->routeIs('roles.*');
-    $isPermissionRoute = request()->routeIs('permissions.*');
-
-    $isRolePermissionOpen = $isRoleRoute || $isPermissionRoute;
-
-    $rolePermissionMenuClass = $isRolePermissionOpen ? 'open active' : '';
-    $rolePermissionToggleClass = $isRolePermissionOpen ? 'menu-link menu-toggle active' : 'menu-link menu-toggle';
-    $rolePermissionSubmenuStyle = $isRolePermissionOpen ? 'display: block;' : '';
-    $canAccessUserManagement = auth()->check() && auth()->user()->canAny($userManagementPermissions);
-    $appName = $setting->thumbnail ?? 'Base App Template';
-@endphp
 <aside id="layout-menu" class="layout-menu menu-vertical  menu bg-menu-theme">
     <div class="app-brand demo">
         <a href="{{ route('home') }}" wire:navigate
@@ -44,13 +24,11 @@
             </a>
         </li>
 
-        <!-- Apps & Pages Header -->
         <li class="menu-header small text-uppercase">
             <span class="menu-header-text">Apps & Pages</span>
         </li>
 
         @can('products.index')
-            <!-- Products -->
             <li class="menu-item {{ $isProductRoute ? 'active' : '' }}">
                 <a href="{{ route('products.index') }}" wire:navigate class="menu-link">
                     <i class="menu-icon tf-icons ti ti-files"></i>
@@ -60,14 +38,12 @@
         @endcan
 
         @if ($canAccessUserManagement)
-            <!-- User Management Header -->
             <li class="menu-header small text-uppercase">
                 <span class="menu-header-text">User Management</span>
             </li>
         @endif
 
         @can('users.index')
-            <!-- Users -->
             <li class="menu-item {{ $isUserRoute ? 'active' : '' }}">
                 <a href="{{ route('users.index') }}" wire:navigate class="menu-link">
                     <i class="menu-icon tf-icons ti ti-users"></i>
@@ -77,10 +53,9 @@
         @endcan
 
         @canany(['permissions.index', 'role.index'])
-            <!-- Roles & Permissions -->
             <li class="menu-item {{ $rolePermissionMenuClass }}">
                 <a href="javascript:void(0);" class="{{ $rolePermissionToggleClass }}"
-                    aria-expanded="{{ $isRolePermissionOpen ? 'true' : 'false' }}">
+                    aria-expanded="{{ $rolePermissionSubmenuStyle ? 'true' : 'false' }}">
                     <i class="menu-icon tf-icons ti ti-settings"></i>
                     <div data-i18n="Roles & Permissions">Roles & Permissions</div>
                 </a>

@@ -40,6 +40,22 @@
 <script data-navigate-once>
     window.appLayout = window.appLayout || {};
 
+    window.appLayout.parseAutoClose = function(value) {
+        if (value === undefined || value === null || value === '') {
+            return true;
+        }
+
+        if (value === 'false') {
+            return false;
+        }
+
+        if (value === 'inside' || value === 'outside') {
+            return value;
+        }
+
+        return true;
+    };
+
     window.appLayout.resetDropdownState = function(root = document) {
         root.querySelectorAll('.dropdown.show').forEach((element) => {
             element.classList.remove('show');
@@ -52,6 +68,36 @@
 
         root.querySelectorAll('[data-bs-toggle="dropdown"]').forEach((toggle) => {
             toggle.setAttribute('aria-expanded', 'false');
+        });
+
+        root.querySelectorAll('[data-profile-dropdown-toggle="true"]').forEach((toggle) => {
+            toggle.setAttribute('aria-expanded', 'false');
+        });
+    };
+
+    window.appLayout.toggleManualProfileDropdown = function(toggle, forceOpen = null) {
+        const dropdownRoot = toggle?.closest('[data-manual-dropdown="profile"]');
+        const dropdownMenu = dropdownRoot?.querySelector('[data-profile-dropdown-menu="true"]');
+
+        if (!dropdownRoot || !dropdownMenu) {
+            return;
+        }
+
+        const isOpen = dropdownRoot.classList.contains('show') || dropdownMenu.classList.contains('show');
+        const shouldOpen = forceOpen === null ? !isOpen : Boolean(forceOpen);
+
+        dropdownRoot.classList.toggle('show', shouldOpen);
+        dropdownMenu.classList.toggle('show', shouldOpen);
+        toggle.setAttribute('aria-expanded', shouldOpen ? 'true' : 'false');
+
+        if (!shouldOpen) {
+            dropdownMenu.removeAttribute('data-bs-popper');
+        }
+    };
+
+    window.appLayout.closeManualProfileDropdowns = function() {
+        document.querySelectorAll('[data-profile-dropdown-toggle="true"]').forEach((toggle) => {
+            window.appLayout.toggleManualProfileDropdown(toggle, false);
         });
     };
 
@@ -130,14 +176,48 @@
         });
 
         document.querySelectorAll('[data-bs-toggle="dropdown"]').forEach((element) => {
+            if (element.closest('[data-manual-dropdown="profile"]')) {
+                return;
+            }
+
             bootstrap.Dropdown.getOrCreateInstance(element, {
-                autoClose: element.dataset.bsAutoClose || true,
+                autoClose: window.appLayout.parseAutoClose(element.dataset.bsAutoClose),
                 display: element.dataset.bsDisplay || 'dynamic'
             });
         });
     };
 
+    window.appLayout.bindDropdownFallback = function() {
+        if (window.appLayout.dropdownFallbackBound) {
+            return;
+        }
+
+        document.addEventListener('click', (event) => {
+            const toggle = event.target.closest('[data-bs-toggle="dropdown"]');
+
+            if (!toggle || typeof bootstrap === 'undefined') {
+                return;
+            }
+
+            if (toggle.closest('[data-manual-dropdown="profile"]')) {
+                return;
+            }
+
+            const dropdown = bootstrap.Dropdown.getOrCreateInstance(toggle, {
+                autoClose: window.appLayout.parseAutoClose(toggle.dataset.bsAutoClose),
+                display: toggle.dataset.bsDisplay || 'dynamic'
+            });
+
+            event.preventDefault();
+            dropdown.toggle();
+        });
+
+        window.appLayout.dropdownFallbackBound = true;
+    };
+
     window.appLayout.closeOpenDropdowns = function() {
+        window.appLayout.closeManualProfileDropdowns();
+
         if (typeof bootstrap === 'undefined') {
             return;
         }
@@ -151,6 +231,37 @@
         });
 
         window.appLayout.resetDropdownState();
+    };
+
+    window.appLayout.bindManualProfileDropdown = function() {
+        if (window.appLayout.manualProfileDropdownBound) {
+            return;
+        }
+
+        document.addEventListener('click', (event) => {
+            const toggle = event.target.closest('[data-profile-dropdown-toggle="true"]');
+
+            if (toggle) {
+                event.preventDefault();
+                event.stopPropagation();
+                window.appLayout.toggleManualProfileDropdown(toggle);
+                return;
+            }
+
+            const insideMenu = event.target.closest('[data-profile-dropdown-menu="true"]');
+
+            if (!insideMenu) {
+                window.appLayout.closeManualProfileDropdowns();
+            }
+        });
+
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape') {
+                window.appLayout.closeManualProfileDropdowns();
+            }
+        });
+
+        window.appLayout.manualProfileDropdownBound = true;
     };
 
     window.appLayout.closeMobileMenuOnNavigate = function() {
@@ -178,14 +289,26 @@
 
     window.appLayout.boot = function() {
         window.appLayout.bindMenuTogglers();
+        window.appLayout.bindManualProfileDropdown();
+        window.appLayout.bindDropdownFallback();
         window.appLayout.initMenu();
         window.appLayout.initBootstrapUi();
     };
+
+    document.addEventListener('livewire:initialized', () => {
+        requestAnimationFrame(() => {
+            window.appLayout.boot();
+        });
+    });
 
     document.addEventListener('livewire:navigated', () => {
         requestAnimationFrame(() => {
             window.appLayout.boot();
         });
+    });
+
+    document.addEventListener('livewire:navigating', () => {
+        window.appLayout.closeOpenDropdowns();
     });
 </script>
 

@@ -1,14 +1,3 @@
-@php
-    $setting = \App\Models\SettingApp::first();
-    $logoUrl = $setting?->logo
-        ? asset('storage/uploads/logos/' . $setting->logo)
-        : asset('assets/img/favicon/favicon.ico');
-    $user = auth()->user();
-    $brandName = $setting->brand ?? 'Base App Template';
-    $userName = $user?->name ?? 'User';
-    $userRole = $user?->getRoleNames()->first() ?? 'User';
-    $avatarUrl = 'https://ui-avatars.com/api/?name=' . urlencode($userName) . '&background=0d6efd&color=ffffff';
-@endphp
 <nav class="layout-navbar container-fluid navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme">
     <div class="navbar-nav align-items-xl-center me-3 me-xl-0 d-xl-none">
         <a class="nav-item nav-link px-0 me-xl-4 layout-menu-toggle" href="javascript:void(0);" role="button"
@@ -18,7 +7,7 @@
     </div>
 
     <div class="navbar-nav-right d-flex align-items-center w-100">
-        <div class="navbar-nav align-items-center w-100">
+        <div class="navbar-nav align-items-center flex-grow-1 min-w-0">
             <div class="nav-item navbar-search-wrapper mb-0 w-100">
                 <div class="position-relative d-flex align-items-center w-100 min-vh-0">
                     <a href="{{ route('home') }}" wire:navigate
@@ -34,24 +23,22 @@
             </div>
         </div>
 
-        <ul class="navbar-nav flex-row align-items-center ms-auto">
-            <li class="nav-item navbar-dropdown dropdown-user dropdown">
-                <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" role="button"
-                    data-bs-toggle="dropdown" data-bs-auto-close="outside" data-bs-display="static"
-                    aria-expanded="false">
+        <ul class="navbar-nav flex-row align-items-center ms-auto flex-shrink-0">
+            <li class="nav-item navbar-dropdown dropdown-user dropdown" wire:ignore data-manual-dropdown="profile">
+                <button class="nav-link dropdown-toggle hide-arrow border-0 bg-transparent p-0" type="button"
+                    data-profile-dropdown-toggle="true" aria-expanded="false" aria-label="Open profile menu">
                     <div class="avatar avatar-online">
                         <img src="{{ $avatarUrl }}" alt="{{ $userName }}" class="rounded-circle" />
                     </div>
-                </a>
+                </button>
 
-                <ul class="dropdown-menu dropdown-menu-end">
+                <ul class="dropdown-menu dropdown-menu-end mt-2" style="right: 0; left: auto;" data-profile-dropdown-menu="true">
                     <li>
                         <div class="dropdown-item-text">
                             <div class="d-flex align-items-center">
                                 <div class="flex-shrink-0 me-3">
                                     <div class="avatar avatar-online">
-                                        <img src="{{ $avatarUrl }}" alt="{{ $userName }}"
-                                            class="rounded-circle" />
+                                        <img src="{{ $avatarUrl }}" alt="{{ $userName }}" class="rounded-circle" />
                                     </div>
                                 </div>
                                 <div class="flex-grow-1">

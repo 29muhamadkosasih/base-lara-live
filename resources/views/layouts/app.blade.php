@@ -21,12 +21,12 @@
         <div class="layout-container">
 
             <!-- Sidebar Menu -->
-            @include('partials.sidebar')
+            <livewire:layout.sidebar />
 
             <!-- Layout Page -->
             <div class="layout-page">
                 <!-- Navbar -->
-                @include('partials.navbar')
+                <livewire:layout.navbar />
 
                 <!-- Content Wrapper -->
                 <div class="content-wrapper">
