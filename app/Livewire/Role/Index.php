@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Role;
 
+use App\Support\AuditLogger;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Component;
@@ -18,6 +19,7 @@ class Index extends Component
     public $showConfirm = false;
     public $search = '';
     public $filter = '';
+    public $perPage = 5;
 
     protected $paginationTheme = 'bootstrap';
 
@@ -39,6 +41,12 @@ class Index extends Component
         $this->resetPage();
     }
 
+    public function updatePerPage($value)
+    {
+        $this->perPage = $value === 'all' ? PHP_INT_MAX : (int) $value;
+        $this->resetPage();
+    }
+
     public function render()
     {
         $query = Role::with('permissions')->select('id', 'name')->latest();
@@ -48,7 +56,7 @@ class Index extends Component
         }
 
         return view('livewire.role.index', [
-            'datas' => $query->paginate(5),
+            'datas' => $query->paginate($this->perPage),
         ]);
     }
 
@@ -75,6 +83,10 @@ class Index extends Component
         $role = Role::find($this->dataId);
 
         if ($role) {
+            AuditLogger::log('role.deleted', $role, 'Role dihapus.', [
+                'attributes' => $role->only(['name']),
+            ]);
+
             $role->delete();
             $this->toast('message', 'Data berhasil dihapus.');
         } else {

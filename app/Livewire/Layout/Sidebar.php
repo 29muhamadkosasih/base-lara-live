@@ -13,7 +13,7 @@ class Sidebar extends Component
         $setting = SettingApp::first();
         $logoUrl = $setting?->logo
             ? asset('storage/uploads/logos/' . $setting->logo)
-            : asset('assets/img/favicon/favicon.ico');
+            : asset('storage/default-logo.png');
 
         $userManagementPermissions = ['permissions.index', 'role.index', 'users.index'];
         $isHomeRoute = request()->routeIs('home');

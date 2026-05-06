@@ -20,7 +20,7 @@
         <li class="menu-item {{ $isHomeRoute ? 'active' : '' }}">
             <a href="{{ route('home') }}" wire:navigate class="menu-link">
                 <i class="menu-icon tf-icons ti ti-smart-home"></i>
-                <div>Home</div>
+                <div>Dashboard</div>
             </a>
         </li>
 
@@ -33,6 +33,15 @@
                 <a href="{{ route('products.index') }}" wire:navigate class="menu-link">
                     <i class="menu-icon tf-icons ti ti-files"></i>
                     <div>Product</div>
+                </a>
+            </li>
+        @endcan
+
+        @can('audit-logs')
+            <li class="menu-item {{ request()->routeIs('audit_logs.index') ? 'active' : '' }}">
+                <a href="{{ route('audit_logs.index') }}" wire:navigate class="menu-link">
+                    <i class="menu-icon tf-icons ti ti-history"></i>
+                    <div>Audit Log</div>
                 </a>
             </li>
         @endcan

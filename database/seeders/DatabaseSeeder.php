@@ -16,6 +16,7 @@ class DatabaseSeeder extends Seeder
             CreateAdminUserSeeder::class,
             SettingAppSeeder::class,
             \Database\Seeders\ProductSeeder::class,
+            \Database\Seeders\AuditLogSeeder::class,
         ]);
     }
 }

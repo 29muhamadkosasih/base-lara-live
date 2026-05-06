@@ -2,12 +2,13 @@
 
 namespace App\Livewire\Permission;
 
+use App\Support\AuditLogger;
+use Illuminate\Validation\Rule;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Spatie\Permission\Models\Permission;
-use Illuminate\Validation\Rule;
 
 #[Layout('layouts.app')]
 #[Title('Permission')]
@@ -22,6 +23,7 @@ class Index extends Component
     // filter/search manual
     public $search = '';
     public $filter = '';
+    public $perPage = 10;
 
     protected $paginationTheme = 'bootstrap';
 
@@ -42,9 +44,15 @@ class Index extends Component
         $this->resetPage();
     }
 
+    public function updatePerPage($value)
+    {
+        $this->perPage = $value === 'all' ? PHP_INT_MAX : (int) $value;
+        $this->resetPage();
+    }
+
     public function render()
     {
-        $datas = Permission::query()->when($this->filter, fn ($q) => $q->where('name', 'like', '%' . $this->filter . '%'))->latest()->paginate(10);
+        $datas = Permission::query()->when($this->filter, fn ($q) => $q->where('name', 'like', '%' . $this->filter . '%'))->latest()->paginate($this->perPage);
 
         return view('livewire.permission.index', compact('datas'));
     }
@@ -67,7 +75,10 @@ class Index extends Component
             'name' => 'required|min:3|unique:permissions,name',
         ]);
 
-        Permission::create($validated);
+        $permission = Permission::create($validated);
+        AuditLogger::log('permission.created', $permission, 'Permission baru ditambahkan.', [
+            'attributes' => $validated,
+        ]);
 
         $this->toast('message', 'Data berhasil ditambahkan.');
         $this->resetInput();
@@ -87,7 +98,13 @@ class Index extends Component
             'name' => ['required', 'min:3', Rule::unique('permissions', 'name')->ignore($this->dataId)],
         ]);
 
-        Permission::findOrFail($this->dataId)->update($validated);
+        $permission = Permission::findOrFail($this->dataId);
+        $before = $permission->only(['name']);
+        $permission->update($validated);
+        AuditLogger::log('permission.updated', $permission, 'Permission diperbarui.', [
+            'before' => $before,
+            'after' => $validated,
+        ]);
 
         $this->toast('message', 'Data berhasil diperbarui.');
         $this->resetInput();
@@ -107,7 +124,15 @@ class Index extends Component
 
     public function delete()
     {
-        Permission::find($this->dataId)?->delete();
+        $permission = Permission::find($this->dataId);
+
+        if ($permission) {
+            AuditLogger::log('permission.deleted', $permission, 'Permission dihapus.', [
+                'attributes' => $permission->only(['name']),
+            ]);
+
+            $permission->delete();
+        }
 
         $this->toast('message', 'Data berhasil dihapus.');
         $this->closeModal();

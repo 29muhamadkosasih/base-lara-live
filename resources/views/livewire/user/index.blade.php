@@ -99,19 +99,47 @@
                         <div class="col-md-6 col-12 mb-3 mb-md-0">
                             <h5 class="mb-0">Data User</h5>
                         </div>
-                        {{-- Kolom kanan: Form Search dan Tombol --}}
                         <div class="col-md-6 col-12">
-                            <form wire:submit.prevent="applyFilter">
-                                <div class="input-group">
-                                    <input type="text" wire:model.defer="search" class="form-control"
-                                        placeholder="Ketik kata kunci...">
-                                    <button class="btn btn-primary btn-sm" type="submit"> Cari
-                                    </button>
-                                    <button class="btn btn-secondary btn-sm" type="button" wire:click="resetFilter">
-                                        <i class="ti ti-x"></i>
-                                    </button>
+                            <div class="row mb-0">
+                                <div class="col-12">
+                                    <form wire:submit.prevent="applyFilter">
+                                        <div class="d-flex justify-content-end align-items-center gap-2 flex-wrap">
+                                            <!-- SEARCH -->
+                                            <div class="input-group input-group-sm" style="max-width: 400px;">
+                                                <input type="text" wire:model.defer="search" class="form-control"
+                                                    placeholder="Ketik kata kunci...">
+
+                                                <button class="btn btn-primary btn-sm" type="submit">
+                                                    Cari
+                                                </button>
+
+                                                <button class="btn btn-secondary btn-sm" type="button"
+                                                    wire:click="resetFilter">
+                                                    <i class="ti ti-x"></i>
+                                                </button>
+                                            </div>
+                                            <!-- SHOW ENTRIES -->
+                                            <div class="d-flex align-items-center">
+                                                <label class="mb-0 me-2">Show</label>
+
+                                                <select wire:model="perPage"
+                                                    wire:change="updatePerPage($event.target.value)"
+                                                    class="form-select form-select-sm w-auto">
+                                                    <option value="10">10</option>
+                                                    <option value="15">15</option>
+                                                    <option value="25">25</option>
+                                                    <option value="50">50</option>
+                                                    <option value="all">All</option>
+                                                </select>
+
+                                                <span class="ms-2">entries</span>
+                                            </div>
+
+                                        </div>
+                                    </form>
+
                                 </div>
-                            </form>
+                            </div>
                         </div>
                     </div>
                 </div>

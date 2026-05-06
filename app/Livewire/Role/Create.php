@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Role;
 
+use App\Support\AuditLogger;
 use Illuminate\Validation\Rule;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
@@ -49,6 +50,12 @@ class Create extends Component
         ]);
 
         $role->syncPermissions($this->selectedPermissions);
+        AuditLogger::log('role.created', $role, 'Role baru ditambahkan.', [
+            'attributes' => [
+                'name' => $this->name,
+                'permissions' => $this->selectedPermissions,
+            ],
+        ]);
 
         $this->toast('message', 'Data berhasil dibuat!');
         return $this->redirectRoute('roles.index', navigate: true);

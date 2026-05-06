@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Role;
 
+use App\Support\AuditLogger;
 use Illuminate\Validation\Rule;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
@@ -58,6 +59,12 @@ class Edit extends Component
         ]);
 
         $role->syncPermissions($this->selectedPermissions);
+        AuditLogger::log('role.updated', $role, 'Role diperbarui.', [
+            'after' => [
+                'name' => $this->name,
+                'permissions' => $this->selectedPermissions,
+            ],
+        ]);
 
         $this->toast('message', 'Data berhasil diperbarui!');
         return $this->redirectRoute('roles.index', navigate: true);

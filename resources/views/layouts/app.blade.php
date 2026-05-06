@@ -1,6 +1,6 @@
 @php
     $setting = \App\Models\SettingApp::first();
-    $logoUrl = $setting?->logo ? asset('storage/uploads/logos/' . $setting->logo) : asset('assets/img/favicon/favicon.ico');
+    $logoUrl = $setting?->logo ? asset('storage/uploads/logos/' . $setting->logo) : asset('storage/default-logo.png');
     $pageTitle = $title ?? trim($__env->yieldContent('title'));
     $appName = $setting->brand ?? 'Base App Template';
 @endphp

@@ -12,6 +12,8 @@ class CreateAdminUserSeeder extends Seeder
 {
     /**
      * Run the database seeds.
+     *
+     * @return void
      */
     public function run(): void
     {
@@ -21,7 +23,7 @@ class CreateAdminUserSeeder extends Seeder
             'email' => 'admin@gmail.com',
         ], [
             'name' => 'Muhamad Kosasih',
-            'password' => bcrypt('password'),
+            'password' => bcrypt('password123'),
         ]);
 
         $role = Role::firstOrCreate([

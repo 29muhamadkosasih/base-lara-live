@@ -4,20 +4,20 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateSettingAppsTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
         Schema::create('setting_apps', function (Blueprint $table) {
             $table->id();
-            $table->string('logo')->nullable(); // Kolom untuk logo
-            $table->string('brand'); // Kolom untuk brand
-            $table->string('thumbnail'); // Kolom untuk brand
+            $table->string('brand');
+            $table->string('thumbnail')->nullable();
+            $table->string('logo')->nullable();
             $table->timestamps();
         });
     }
@@ -27,8 +27,8 @@ class CreateSettingAppsTable extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::dropIfExists('setting_apps');
     }
-}
+};

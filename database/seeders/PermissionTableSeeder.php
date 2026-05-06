@@ -10,30 +10,14 @@ class PermissionTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
+     *
+     * @return void
      */
     public function run(): void
     {
         app(PermissionRegistrar::class)->forgetCachedPermissions();
 
-        $permissions = [
-            'permissions.index',
-            'permissions.create',
-            'permissions.edit',
-            'permissions.delete',
-            'users.index',
-            'users.create',
-            'users.edit',
-            'users.delete',
-            'products.index',
-            'products.create',
-            'products.edit',
-            'products.delete',
-            'role.index',
-            'role.create',
-            'role.edit',
-            'role.delete',
-            'setting-apps',
-        ];
+        $permissions = ['audit-logs', 'permissions.index', 'permissions.create', 'permissions.edit', 'permissions.delete', 'users.index', 'users.create', 'users.edit', 'users.delete', 'products.index', 'products.create', 'products.edit', 'products.delete', 'role.index', 'role.create', 'role.edit', 'role.delete', 'setting-apps'];
 
         foreach ($permissions as $permission) {
             Permission::firstOrCreate([

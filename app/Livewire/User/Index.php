@@ -3,6 +3,7 @@
 namespace App\Livewire\User;
 
 use App\Models\User;
+use App\Support\AuditLogger;
 use Illuminate\Support\Facades\Hash;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
@@ -29,6 +30,7 @@ class Index extends Component
 
     public $search = '';
     public $filter = '';
+    public $perPage = 10;
 
     protected $paginationTheme = 'bootstrap';
 
@@ -54,7 +56,7 @@ class Index extends Component
             ->with('roles')
             ->when($this->filter, fn ($q) => $q->where('name', 'like', '%' . $this->filter . '%'))
             ->latest()
-            ->paginate(10);
+            ->paginate($this->perPage);
 
         return view('livewire.user.index', compact('datas'));
     }
@@ -73,6 +75,12 @@ class Index extends Component
     public function resetFilter()
     {
         $this->reset(['search', 'filter']);
+        $this->resetPage();
+    }
+
+    public function updatePerPage($value)
+    {
+        $this->perPage = $value === 'all' ? PHP_INT_MAX : (int) $value;
         $this->resetPage();
     }
 
@@ -101,6 +109,13 @@ class Index extends Component
             ]);
 
             $user->syncRoles($this->roles);
+            AuditLogger::log('user.created', $user, 'User baru ditambahkan.', [
+                'attributes' => [
+                    'name' => $this->name,
+                    'email' => $this->email,
+                    'roles' => $this->roles,
+                ],
+            ]);
             DB::commit();
 
             $this->toast('message', 'User berhasil ditambahkan.');
@@ -143,6 +158,13 @@ class Index extends Component
             $user->update($data);
 
             $user->syncRoles($this->roles);
+            AuditLogger::log('user.updated', $user, 'User diperbarui.', [
+                'after' => [
+                    'name' => $this->name,
+                    'email' => $this->email,
+                    'roles' => $this->roles,
+                ],
+            ]);
 
             DB::commit();
 
@@ -168,7 +190,15 @@ class Index extends Component
 
     public function delete()
     {
-        User::find($this->dataId)?->delete();
+        $user = User::find($this->dataId);
+
+        if ($user) {
+            AuditLogger::log('user.deleted', $user, 'User dihapus.', [
+                'attributes' => $user->only(['name', 'email']),
+            ]);
+
+            $user->delete();
+        }
 
         $this->toast('message', 'Data berhasil dihapus.');
         $this->closeModal();

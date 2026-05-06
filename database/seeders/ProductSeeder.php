@@ -9,6 +9,8 @@ class ProductSeeder extends Seeder
 {
     /**
      * Run the database seeds.
+     *
+     * @return void
      */
     public function run(): void
     {
@@ -16,14 +18,17 @@ class ProductSeeder extends Seeder
             [
                 'name' => 'Produk Sample 1',
                 'detail' => 'Produk contoh untuk data awal aplikasi.',
+                'cover_image' => null,
             ],
             [
                 'name' => 'Produk Sample 2',
                 'detail' => 'Data sample kedua yang siap dipakai untuk testing CRUD.',
+                'cover_image' => null,
             ],
             [
                 'name' => 'Produk Sample 3',
                 'detail' => 'Data bawaan agar halaman produk langsung memiliki isi.',
+                'cover_image' => null,
             ],
         ];
 
@@ -32,6 +37,7 @@ class ProductSeeder extends Seeder
                 'name' => $product['name'],
             ], [
                 'detail' => $product['detail'],
+                'cover_image' => $product['cover_image'],
             ]);
         }
     }
