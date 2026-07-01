@@ -6,8 +6,18 @@
 @endphp
 
 <!DOCTYPE html>
-<html lang="en" class="light-style layout-navbar-fixed layout-menu-fixed layout-wide layout-menu-collapsed"
+<html lang="en" class="light-style layout-navbar-fixed layout-menu-fixed layout-wide"
     dir="ltr" data-theme="theme-default" data-assets-path="../../assets/" data-template="vertical-menu-template">
+<script>
+    // Apply sidebar collapsed state from localStorage before render to prevent FOUC
+    (function() {
+        var isCollapsed = localStorage.getItem('sidebar-collapsed');
+        // Default to collapsed if no preference is set
+        if (isCollapsed === null || isCollapsed === 'true') {
+            document.documentElement.classList.add('layout-menu-collapsed');
+        }
+    })();
+</script>
 
 @include('layouts.partials.head', [
     'logoUrl' => $logoUrl,

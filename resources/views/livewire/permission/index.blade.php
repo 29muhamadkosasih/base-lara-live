@@ -49,16 +49,11 @@
                                         <div class="d-flex justify-content-end align-items-center gap-2 flex-wrap">
                                             <!-- SEARCH -->
                                             <div class="input-group input-group-sm" style="max-width: 400px;">
-                                                <input type="text" wire:model.defer="search" class="form-control"
+                                                <input type="text" wire:model.live.debounce.300ms="search" class="form-control"
                                                     placeholder="Ketik kata kunci...">
 
                                                 <button class="btn btn-primary btn-sm" type="submit">
                                                     Cari
-                                                </button>
-
-                                                <button class="btn btn-secondary btn-sm" type="button"
-                                                    wire:click="resetFilter">
-                                                    <i class="ti ti-x"></i>
                                                 </button>
                                             </div>
                                             <!-- SHOW ENTRIES -->

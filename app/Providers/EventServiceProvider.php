@@ -25,7 +25,19 @@ class EventServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        Event::listen(\Illuminate\Auth\Events\Login::class, function ($event) {
+            \App\Support\AuditLogger::log('auth.login', $event->user, 'Pengguna berhasil masuk (Login).');
+        });
+
+        Event::listen(\Illuminate\Auth\Events\Logout::class, function ($event) {
+            if ($event->user) {
+                \App\Support\AuditLogger::log('auth.logout', $event->user, 'Pengguna keluar dari sistem (Logout).');
+            }
+        });
+
+        Event::listen(\Illuminate\Auth\Events\Failed::class, function ($event) {
+            \App\Support\AuditLogger::log('auth.failed', null, 'Gagal masuk sistem menggunakan email: ' . ($event->credentials['email'] ?? 'unknown'));
+        });
     }
 
     /**

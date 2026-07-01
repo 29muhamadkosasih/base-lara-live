@@ -15,8 +15,8 @@ class DatabaseSeeder extends Seeder
             PermissionTableSeeder::class,
             CreateAdminUserSeeder::class,
             SettingAppSeeder::class,
-            \Database\Seeders\ProductSeeder::class,
-            \Database\Seeders\AuditLogSeeder::class,
+            ProductSeeder::class,
+            AuditLogSeeder::class,
         ]);
     }
 }

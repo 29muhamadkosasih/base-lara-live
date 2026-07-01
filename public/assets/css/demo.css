@@ -31,6 +31,104 @@
   font-size: 1.375rem;
 }
 
+/*
+* Sidebar Collapsed / Expanded States
+******************************************************************************/
+
+/* App brand transitions for smooth collapse/expand */
+.menu .app-brand.demo {
+  overflow: hidden;
+  transition: padding 0.3s ease;
+  position: relative;
+}
+
+.menu .app-brand-link {
+  overflow: hidden;
+  white-space: nowrap;
+  transition: all 0.3s ease;
+}
+
+.menu .app-brand-text {
+  transition: opacity 0.3s ease, width 0.3s ease, margin 0.3s ease;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.menu .app-brand-logo-img {
+  transition: width 0.3s ease;
+}
+
+/* Toggle button in sidebar header - always visible */
+.menu .app-brand .layout-menu-toggle {
+  flex-shrink: 0;
+  transition: all 0.3s ease;
+}
+
+/* Collapsed state - desktop (>= 1200px) */
+@media (min-width: 1200px) {
+  /* Hide app brand text when collapsed (not hovering) */
+  .layout-menu-collapsed:not(.layout-menu-hover) .menu .app-brand-text {
+    opacity: 0;
+    width: 0;
+    margin: 0 !important;
+    padding: 0;
+    visibility: hidden;
+    display: none;
+  }
+
+  /* Center the logo in collapsed state */
+  .layout-menu-collapsed:not(.layout-menu-hover) .menu .app-brand.demo {
+    padding: 0;
+    justify-content: center;
+    width: 5.25rem;
+  }
+
+  .layout-menu-collapsed:not(.layout-menu-hover) .menu .app-brand-link {
+    width: 100%;
+    justify-content: center;
+    padding: 0;
+    margin: 0;
+  }
+
+  /* Center the logo image */
+  .layout-menu-collapsed:not(.layout-menu-hover) .menu .app-brand-logo-img {
+    margin: 0 auto;
+    display: block;
+  }
+
+  /* Hide toggle button in collapsed state */
+  .layout-menu-collapsed:not(.layout-menu-hover) .menu .app-brand .layout-menu-toggle {
+    display: none;
+  }
+
+  /* Show brand text on hover when collapsed */
+  .layout-menu-collapsed.layout-menu-hover .menu .app-brand-text {
+    opacity: 1;
+    width: auto;
+    margin-left: 0.5rem !important;
+    visibility: visible;
+    display: inline-block;
+  }
+
+  .layout-menu-collapsed.layout-menu-hover .menu .app-brand.demo {
+    padding-left: 1.5rem;
+    width: auto;
+  }
+
+  .layout-menu-collapsed.layout-menu-hover .menu .app-brand-link {
+    justify-content: flex-start;
+  }
+
+  .layout-menu-collapsed.layout-menu-hover .menu .app-brand .layout-menu-toggle {
+    display: flex;
+  }
+
+  /* Expanded state (non-collapsed) - ensure toggle is always visible */
+  html:not(.layout-menu-collapsed) .menu .app-brand .layout-menu-toggle {
+    opacity: 1;
+  }
+}
+
 /* ! For .layout-navbar-fixed added fix padding top tpo .layout-page */
 .layout-navbar-fixed .layout-wrapper:not(.layout-without-menu) .layout-page {
   padding-top: 64px !important;

@@ -1,15 +1,15 @@
-<aside id="layout-menu" class="layout-menu menu-vertical  menu bg-menu-theme">
+<aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
     <div class="app-brand demo">
         <a href="{{ route('home') }}" wire:navigate
-            class="app-brand-link d-flex align-items-center flex-grow-1 text-decoration-none">
-            <img src="{{ $logoUrl }}" width="50" alt="Logo" class="h-auto" />
-            <span class="app-brand-text demo menu-text fw-bold ms-2">
+            class="app-brand-link d-flex align-items-center text-decoration-none">
+            <img src="{{ $logoUrl }}" width="40" alt="Logo" class="app-brand-logo-img h-auto flex-shrink-0" />
+            <span class="app-brand-text demo menu-text fw-bold">
                 {{ $appName }}
             </span>
         </a>
 
-        <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto" role="button"
-            aria-label="Toggle menu" aria-controls="layout-menu" aria-expanded="true">
+        <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto d-xl-flex"
+            role="button" aria-label="Toggle menu" aria-controls="layout-menu" aria-expanded="true">
             <i class="ti menu-toggle-icon d-none d-xl-block ti-sm align-middle"></i>
             <i class="ti ti-x d-block d-xl-none ti-sm align-middle"></i>
         </a>
@@ -21,6 +21,12 @@
             <a href="{{ route('home') }}" wire:navigate class="menu-link">
                 <i class="menu-icon tf-icons ti ti-smart-home"></i>
                 <div>Dashboard</div>
+            </a>
+        </li>
+        <li class="menu-item {{ request()->routeIs('auth.security') ? 'active' : '' }}">
+            <a href="{{ route('auth.security') }}" wire:navigate class="menu-link">
+                <i class="menu-icon tf-icons ti ti-shield-lock"></i>
+                <div>Keamanan Akun</div>
             </a>
         </li>
 
@@ -42,6 +48,12 @@
                 <a href="{{ route('audit_logs.index') }}" wire:navigate class="menu-link">
                     <i class="menu-icon tf-icons ti ti-history"></i>
                     <div>Audit Log</div>
+                </a>
+            </li>
+            <li class="menu-item {{ request()->routeIs('log_viewer.index') ? 'active' : '' }}">
+                <a href="{{ route('log_viewer.index') }}" wire:navigate class="menu-link">
+                    <i class="menu-icon tf-icons ti ti-report-analytics"></i>
+                    <div>System Logs</div>
                 </a>
             </li>
         @endcan
@@ -69,7 +81,8 @@
                     <div data-i18n="Roles & Permissions">Roles & Permissions</div>
                 </a>
 
-                <ul class="menu-sub" @if ($rolePermissionSubmenuStyle) style="{{ $rolePermissionSubmenuStyle }}" @endif>
+                <ul class="menu-sub"
+                    @if ($rolePermissionSubmenuStyle) style="{{ $rolePermissionSubmenuStyle }}" @endif>
                     @can('role.index')
                         <li class="menu-item {{ $isRoleRoute ? 'active' : '' }}">
                             <a href="{{ route('roles.index') }}" wire:navigate class="menu-link">

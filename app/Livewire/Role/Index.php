@@ -51,8 +51,8 @@ class Index extends Component
     {
         $query = Role::with('permissions')->select('id', 'name')->latest();
 
-        if (!empty($this->filter)) {
-            $query->where('name', 'like', '%' . $this->filter . '%');
+        if (!empty($this->search)) {
+            $query->where('name', 'like', '%' . $this->search . '%');
         }
 
         return view('livewire.role.index', [

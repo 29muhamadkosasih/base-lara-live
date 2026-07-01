@@ -23,11 +23,6 @@
                                                     placeholder="Ketik kata kunci...">
 
                                                 <button class="btn btn-primary btn-sm" type="submit">Cari</button>
-
-                                                <button class="btn btn-secondary btn-sm" type="button"
-                                                    wire:click="resetFilter">
-                                                    <i class="ti ti-x"></i>
-                                                </button>
                                             </div>
 
                                             <!-- SHOW ENTRIES -->

@@ -14,12 +14,14 @@ Route::get('/home', [\App\Http\Controllers\HomeController::class, 'index'])->nam
 
 Route::group(['middleware' => ['auth']], function () {
     Route::get('/audit-logs', \App\Livewire\AuditLog\Index::class)->name('audit_logs.index')->middleware('permission:audit-logs');
+    Route::get('/log-viewer', \App\Livewire\LogViewer\Index::class)->name('log_viewer.index')->middleware('permission:audit-logs');
 
     Route::get('setting-apps', [\App\Http\Controllers\SettingAppController::class, 'index'])->name('setting_apps.index')->middleware('permission:setting-apps');
     Route::get('setting-apps/edit', [\App\Http\Controllers\SettingAppController::class, 'edit'])->name('setting_apps.edit')->middleware('permission:setting-apps');
     Route::put('setting-apps/update', [\App\Http\Controllers\SettingAppController::class, 'update'])->name('setting_apps.update')->middleware('permission:setting-apps');
 
     Route::get('/products', \App\Livewire\Product\Index::class)->name('products.index');
+    Route::get('/security', \App\Livewire\Auth\Security::class)->name('auth.security');
 
     Route::get('/permissions', \App\Livewire\Permission\Index::class)->name('permissions.index')->middleware('permission:permissions.index');
     Route::get('/users', \App\Livewire\User\Index::class)->name('users.index')->middleware('permission:users.index');

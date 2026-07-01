@@ -48,6 +48,11 @@ class Index extends Component
     /** ==========================
      *  FILTER & SEARCH
      *  ========================== */
+    public function updatingSearch()
+    {
+        $this->resetPage();
+    }
+
     public function updatingFilter()
     {
         $this->resetPage();
@@ -76,7 +81,7 @@ class Index extends Component
      *  ========================== */
     public function render()
     {
-        $datas = Product::query()->when($this->filter, fn ($q) => $q->where('name', 'like', '%' . $this->filter . '%'))->latest()->paginate($this->perPage);
+        $datas = Product::query()->when($this->search, fn ($q) => $q->where('name', 'like', '%' . $this->search . '%'))->latest()->paginate($this->perPage);
 
         return view('livewire.product.index', compact('datas'));
     }
@@ -131,7 +136,7 @@ class Index extends Component
      * @param string $filename
      * @return void
      */
-    private function deleteImageFile(string $filename): void
+    private function deleteImageFile(?string $filename): void
     {
         if (empty($filename)) {
             return;

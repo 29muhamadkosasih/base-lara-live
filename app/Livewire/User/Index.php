@@ -54,11 +54,16 @@ class Index extends Component
     {
         $datas = User::query()
             ->with('roles')
-            ->when($this->filter, fn ($q) => $q->where('name', 'like', '%' . $this->filter . '%'))
+            ->when($this->search, fn ($q) => $q->where('name', 'like', '%' . $this->search . '%')->orWhere('email', 'like', '%' . $this->search . '%'))
             ->latest()
             ->paginate($this->perPage);
 
         return view('livewire.user.index', compact('datas'));
+    }
+
+    public function updatingSearch()
+    {
+        $this->resetPage();
     }
 
     public function updatingFilter()

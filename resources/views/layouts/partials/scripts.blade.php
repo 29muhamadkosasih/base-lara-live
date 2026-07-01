@@ -160,6 +160,10 @@
                 }
 
                 window.Helpers.toggleCollapsed();
+
+                // Persist sidebar collapsed state to localStorage
+                const isNowCollapsed = window.Helpers.isCollapsed();
+                localStorage.setItem('sidebar-collapsed', isNowCollapsed ? 'true' : 'false');
             });
         });
     };
@@ -287,6 +291,19 @@
         window.appLayout.navigateHandlerBound = true;
     }
 
+    window.appLayout.restoreSidebarState = function() {
+        var isCollapsed = localStorage.getItem('sidebar-collapsed');
+        // Default to collapsed if no preference saved
+        var shouldBeCollapsed = (isCollapsed === null || isCollapsed === 'true');
+
+        if (shouldBeCollapsed) {
+            document.documentElement.classList.add('layout-menu-collapsed');
+            document.documentElement.classList.remove('layout-menu-expanded');
+        } else {
+            document.documentElement.classList.remove('layout-menu-collapsed');
+        }
+    };
+
     window.appLayout.boot = function() {
         window.appLayout.bindMenuTogglers();
         window.appLayout.bindManualProfileDropdown();
@@ -296,12 +313,14 @@
     };
 
     document.addEventListener('livewire:initialized', () => {
+        window.appLayout.restoreSidebarState();
         requestAnimationFrame(() => {
             window.appLayout.boot();
         });
     });
 
     document.addEventListener('livewire:navigated', () => {
+        window.appLayout.restoreSidebarState();
         requestAnimationFrame(() => {
             window.appLayout.boot();
         });

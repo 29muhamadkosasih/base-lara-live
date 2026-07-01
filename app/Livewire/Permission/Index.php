@@ -27,6 +27,11 @@ class Index extends Component
 
     protected $paginationTheme = 'bootstrap';
 
+    public function updatingSearch()
+    {
+        $this->resetPage();
+    }
+
     public function updatingFilter()
     {
         $this->resetPage();
@@ -52,7 +57,7 @@ class Index extends Component
 
     public function render()
     {
-        $datas = Permission::query()->when($this->filter, fn ($q) => $q->where('name', 'like', '%' . $this->filter . '%'))->latest()->paginate($this->perPage);
+        $datas = Permission::query()->when($this->search, fn ($q) => $q->where('name', 'like', '%' . $this->search . '%'))->latest()->paginate($this->perPage);
 
         return view('livewire.permission.index', compact('datas'));
     }
